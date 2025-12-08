@@ -1,17 +1,22 @@
 export interface ImageData {
-  filename: string
+  id: string
   status: 'success' | 'error'
-  message?: string
+  originalName?: string
   format?: string
-  orientation?: string
+  orientation?: 'landscape' | 'portrait'
   expiryTime?: string
+  tags?: string[]
   urls?: {
     original: string
     webp: string
     avif: string
   }
-  id?: string
-  path?: string
+  sizes?: {
+    original: number
+    webp: number
+    avif: number
+  }
+  error?: string
 }
 
 export interface CopyStatus {

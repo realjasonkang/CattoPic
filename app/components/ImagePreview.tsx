@@ -27,11 +27,9 @@ export const ImagePreview = ({
   const [error, setError] = useState<string | null>(null);
   
   // 判断图片类型并获取适当的URL
-  const isImageFile = 'url' in image;
+  const isImageFile = 'urls' in image && 'sizes' in image;
   const imageUrl = getFullUrl(
-    isImageFile 
-      ? (image as ImageFile).urls?.webp || (image as ImageFile).url
-      : (image as ImageData).urls?.webp || ''
+    image.urls?.webp || image.urls?.original || ''
   );
   
   // 获取格式
@@ -98,7 +96,7 @@ export const ImagePreview = ({
       <div className="h-full w-full flex items-center justify-center">
         <img
           src={imageUrl}
-          alt={image.filename}
+          alt={image.originalName}
           className={`max-h-full max-w-full object-contain transition-opacity duration-300 ${
             isLoading ? "opacity-0" : "opacity-100"
           }`}
@@ -108,7 +106,7 @@ export const ImagePreview = ({
         />
         <a
           href={imageUrl}
-          download={image.filename}
+          download={image.originalName}
           className="absolute bottom-4 right-4 bg-indigo-500 hover:bg-indigo-600 text-white p-2 rounded-full shadow-lg transition-colors duration-300"
           onClick={(e) => e.stopPropagation()}
           title="下载GIF"
@@ -123,7 +121,7 @@ export const ImagePreview = ({
     <div className="relative w-full h-full">
       <Image
         src={imageUrl}
-        alt={image.filename}
+        alt={image.originalName}
         fill
         className={`object-contain transition-opacity duration-300 ${
           isLoading ? "opacity-0" : "opacity-100"

@@ -10,13 +10,13 @@ interface ImageInfoProps {
 
 export const ImageInfo = ({ image }: ImageInfoProps) => {
   // 判断图片类型
-  const isImageFile = 'url' in image && 'size' in image;
-  
+  const isImageFile = 'urls' in image && 'sizes' in image;
+
   // 获取展示信息
   const format = (image.format || '').toLowerCase();
   const orientation = image.orientation || '';
-  const size = isImageFile ? (image as ImageFile).size : 0;
-  const path = image.path || '';
+  const size = isImageFile ? (image as ImageFile).sizes?.original || 0 : 0;
+  const path = isImageFile ? (image as ImageFile).paths?.original || '' : '';
   const width = 'width' in image ? image.width : undefined;
   const height = 'height' in image ? image.height : undefined;
   const expiryTime = 'expiryTime' in image ? image.expiryTime : undefined;

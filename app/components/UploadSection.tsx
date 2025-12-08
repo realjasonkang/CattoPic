@@ -44,9 +44,9 @@ export default function UploadSection({
   // 获取可用标签列表
   const fetchTags = async () => {
     try {
-      const response = await api.get<{ tags: string[] }>('/api/tags')
-      if (response.tags && response.tags.length > 0) {
-        setAvailableTags(response.tags)
+      const response = await api.get<{ success: boolean; tags: { name: string; count: number }[] }>('/api/tags')
+      if (response.success && response.tags && response.tags.length > 0) {
+        setAvailableTags(response.tags.map(t => t.name))
       }
     } catch (error) {
       console.error('获取标签失败:', error)

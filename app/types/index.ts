@@ -14,20 +14,34 @@ export interface PaginatedResponse<T> extends ApiResponse {
   };
 }
 
+// 标签类型
+export interface Tag {
+  name: string;
+  count: number;
+}
+
 // 图片相关类型
 export interface ImageFile {
   id: string;
-  filename: string;
-  url: string;
+  originalName: string;
+  uploadTime: string;
+  expiryTime?: string;
+  orientation: 'landscape' | 'portrait';
+  tags: string[];
   format: string;
-  orientation: string;
-  size: number;
-  path: string;
-  storageType: string;
-  tags?: string[];
-  width?: number;
-  height?: number;
-  urls?: {
+  width: number;
+  height: number;
+  paths: {
+    original: string;
+    webp: string;
+    avif: string;
+  };
+  sizes: {
+    original: number;
+    webp: number;
+    avif: number;
+  };
+  urls: {
     original: string;
     webp: string;
     avif: string;
@@ -72,20 +86,22 @@ export interface ImageFiltersProps {
 
 // 上传结果类型定义
 export interface UploadResult {
-  filename: string;
+  id: string;
   status: "success" | "error";
-  message: string;
-  format?: string;
-  orientation?: string;
-  expiryTime?: string; // 过期时间
-  tags?: string[];
   urls?: {
     original: string;
     webp: string;
     avif: string;
   };
-  id?: string;
-  path?: string;
+  orientation?: 'landscape' | 'portrait';
+  tags?: string[];
+  sizes?: {
+    original: number;
+    webp: number;
+    avif: number;
+  };
+  expiryTime?: string;
+  error?: string;
 }
 
 export interface UploadResponse {
@@ -101,7 +117,7 @@ export interface StatusMessage {
 // 配置类型
 export interface ConfigSettings {
   maxUploadCount: number;
+  maxFileSize: number;
+  supportedFormats: string[];
   imageQuality: number;
-  compressionEffort?: number;
-  forceLossless?: boolean;
 }

@@ -23,7 +23,7 @@ export function ImagePreview({ image }: ImagePreviewProps) {
       >
         <Image
           src={originalUrl}
-          alt={image.filename}
+          alt={image.originalName || ''}
           fill
           sizes="(max-width: 768px) 100vw, 400px"
           className="object-contain"

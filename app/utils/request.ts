@@ -65,14 +65,6 @@ export async function request<T>(
   return response.json();
 }
 
-// 获取静态文件目录列表
-export async function fetchDirectoryListing(
-  path = "/images/"
-): Promise<string[]> {
-  const response = await api.get<{ files: string[] }>("/directory", { path });
-  return response.files;
-}
-
 // 封装常用请求方法
 export const api = {
   request,
@@ -82,6 +74,15 @@ export const api = {
   post: <T>(endpoint: string, data?: any) =>
     request<T>(endpoint, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }),
+
+  put: <T>(endpoint: string, data?: any) =>
+    request<T>(endpoint, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },

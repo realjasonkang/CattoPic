@@ -10,19 +10,24 @@ import { ImageIcon, Cross1Icon, ExclamationTriangleIcon } from "./ui/icons";
 interface ImageSidebarProps {
   isOpen: boolean;
   results: Array<{
-    filename: string;
+    id: string;
     status: "success" | "error";
-    message: string;
+    originalName?: string;
     format?: string;
-    orientation?: string;
+    orientation?: 'landscape' | 'portrait';
     expiryTime?: string;
+    tags?: string[];
     urls?: {
       original: string;
       webp: string;
       avif: string;
     };
-    id?: string;
-    path?: string;
+    sizes?: {
+      original: number;
+      webp: number;
+      avif: number;
+    };
+    error?: string;
   }>;
   onClose: () => void;
   onDelete?: (id: string) => Promise<void>;
@@ -35,19 +40,24 @@ export default function ImageSidebar({
   onDelete,
 }: ImageSidebarProps) {
   const [selectedImage, setSelectedImage] = useState<{
-    filename: string;
+    id: string;
     status: "success" | "error";
-    message?: string;
+    originalName?: string;
     format?: string;
-    orientation?: string;
+    orientation?: 'landscape' | 'portrait';
     expiryTime?: string;
+    tags?: string[];
     urls?: {
       original: string;
       webp: string;
       avif: string;
     };
-    id?: string;
-    path?: string;
+    sizes?: {
+      original: number;
+      webp: number;
+      avif: number;
+    };
+    error?: string;
   } | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [tab, setTab] = useState<"all" | "success" | "error">("all");
@@ -186,8 +196,8 @@ export default function ImageSidebar({
                             <div className="aspect-square relative bg-slate-50 dark:bg-slate-900">
                               {result.urls?.original && (
                                 <Image
-                                  src={getFullUrl(result.urls.webp)}
-                                  alt={result.filename}
+                                  src={getFullUrl(result.urls.webp || result.urls.original)}
+                                  alt={result.originalName || ''}
                                   fill
                                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                                   sizes="(max-width: 768px) 50vw, 33vw"
@@ -202,9 +212,9 @@ export default function ImageSidebar({
                               <div className="absolute bottom-0 left-0 right-0 p-2 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                                 <p
                                   className="text-xs truncate"
-                                  title={result.filename}
+                                  title={result.originalName}
                                 >
-                                  {result.filename}
+                                  {result.originalName}
                                 </p>
                                 {result.expiryTime && (
                                   <p className="text-xs mt-1">
@@ -225,10 +235,10 @@ export default function ImageSidebar({
                               <ExclamationTriangleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                               <div>
                                 <p className="font-medium text-sm text-red-600 dark:text-red-400">
-                                  {result.filename}
+                                  {result.originalName || '上传失败'}
                                 </p>
                                 <p className="text-xs text-red-500 dark:text-red-300 mt-1">
-                                  {result.message}
+                                  {result.error}
                                 </p>
                               </div>
                             </div>

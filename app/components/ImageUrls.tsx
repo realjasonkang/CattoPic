@@ -42,24 +42,24 @@ export const ImageUrls = ({ image }: ImageUrlsProps) => {
   };
 
   // 判断图片类型
-  const isImageFile = 'url' in image;
-  
+  const isImageFile = 'urls' in image && 'sizes' in image;
+
   // 获取URL
-  const originalUrl = getFullUrl(image.urls?.original || (isImageFile ? (image as ImageFile).url : ""));
+  const originalUrl = getFullUrl(image.urls?.original || "");
   const webpUrl = getFullUrl(image.urls?.webp || "");
   const avifUrl = getFullUrl(image.urls?.avif || "");
-  
+
   // 获取当前格式
   const format = (image.format || "").toLowerCase();
-  
+
   const currentFormatUrl =
     format === "webp"
       ? webpUrl
       : format === "avif"
       ? avifUrl
       : originalUrl;
-      
-  const markdownLink = buildMarkdownLink(currentFormatUrl!, image.filename);
+
+  const markdownLink = buildMarkdownLink(currentFormatUrl!, image.originalName || '');
 
   const CopyButton = ({ type, text }: { type: string; text: string }) => (
     <button

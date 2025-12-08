@@ -76,10 +76,10 @@ export default function Home() {
     // 获取配置
     const fetchConfig = async () => {
       try {
-        const response = await api.request<ConfigSettings>('/api/config')
-        setMaxUploadCount(response.maxUploadCount)
-        // 这里可以处理其他配置项，如果需要在前端使用
-        // 例如：如果需要展示高级设置选项
+        const response = await api.request<{ success: boolean; config: ConfigSettings }>('/api/config')
+        if (response.success && response.config) {
+          setMaxUploadCount(response.config.maxUploadCount)
+        }
       } catch (error) {
         console.error('Failed to fetch config:', error)
         // 如果获取失败，使用默认值
@@ -196,20 +196,13 @@ export default function Home() {
   const handleDeleteImage = async (id: string) => {
     try {
       const image = uploadResults.find((img) => img.id === id);
-      if (!image || !image.urls?.original) return;
+      if (!image) return;
 
-      // Extract the real image ID from the original URL
-      // The original URL would be like: /images/original/landscape/filename.jpg
-      // or /images/original/portrait/filename.jpg
-      const urlParts = image.urls.original.split('/');
-      const filename = urlParts[urlParts.length - 1];
-      const fileId = filename.split('.')[0]; // Remove file extension to get the real ID
+      // 使用图片的 ID 直接删除
+      const imageId = image.id;
 
-      const response = await api.post<{ success: boolean; message: string }>(
-        "/api/delete-image",
-        {
-          id: fileId
-        }
+      const response = await api.delete<{ success: boolean; message: string }>(
+        `/api/images/${imageId}`
       );
 
       if (response.success) {
@@ -223,12 +216,12 @@ export default function Home() {
 
         setStatus({
           type: 'success',
-          message: response.message
+          message: response.message || '删除成功'
         });
       } else {
         setStatus({
           type: 'error',
-          message: response.message
+          message: '删除失败'
         });
       }
     } catch (error) {

@@ -66,7 +66,7 @@ export default function ImageModal({ image, isOpen, onClose, onDelete }: ImageMo
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <CameraIcon className="h-6 w-6 text-blue-500" />
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{image.filename}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{image.originalName}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">图片详细信息</p>
                 </div>
               </div>

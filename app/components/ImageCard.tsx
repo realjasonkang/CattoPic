@@ -242,8 +242,8 @@ export default function ImageCard({
           {isGif ? (
             // Use img tag for GIFs to ensure animation plays
             <img
-              src={getFullUrl(image.url)}
-              alt={image.filename}
+              src={getFullUrl(image.urls?.original || '')}
+              alt={image.originalName}
               onLoad={handleImageLoad}
               className={`w-full h-full object-cover transition-all duration-500 ${
                 isLoading ? "opacity-0" : "opacity-100 group-hover:scale-105"
@@ -252,8 +252,8 @@ export default function ImageCard({
           ) : (
             // Use Next.js Image for non-GIF images with optimizations
             <Image
-              src={getFullUrl(image.urls?.webp || image.url)}
-              alt={image.filename}
+              src={getFullUrl(image.urls?.webp || image.urls?.original || '')}
+              alt={image.originalName}
               fill
               loading="lazy"
               onLoad={handleImageLoad}
@@ -291,7 +291,7 @@ export default function ImageCard({
               animate={{ opacity: isHovered ? 1 : 0 }}
               onClick={(e) => {
                 e.stopPropagation();
-                copyToClipboard(getFullUrl(image.urls?.webp || image.url));
+                copyToClipboard(getFullUrl(image.urls?.webp || image.urls?.original || ''));
               }}
               className="p-1.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
               title="复制URL"

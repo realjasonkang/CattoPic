@@ -157,23 +157,20 @@ export default function Manage() {
       const image = images.find((img) => img.id === id);
       if (!image) return;
 
-      const response = await api.post<{ success: boolean; message: string }>(
-        "/api/delete-image",
-        {
-          id: image.id,
-        }
+      const response = await api.delete<{ success: boolean; message: string }>(
+        `/api/images/${image.id}`
       );
 
       if (response.success) {
         await fetchImages();
         setStatus({
           type: "success",
-          message: response.message,
+          message: response.message || "删除成功",
         });
       } else {
         setStatus({
           type: "error",
-          message: response.message,
+          message: "删除失败",
         });
       }
     } catch (error) {
