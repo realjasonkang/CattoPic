@@ -19,11 +19,14 @@ import {
 } from "../types";
 import Header from "../components/Header";
 import ToastContainer from "../components/ToastContainer";
+import ManageTabs from "../components/ManageTabs";
+import TagManagement from "../components/TagManagement";
 import { ImageIcon, Spinner } from "../components/ui/icons";
 
 export default function Manage() {
-  useTheme(); 
+  useTheme();
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'images' | 'tags'>('images');
   const [images, setImages] = useState<ImageFile[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -206,126 +209,134 @@ export default function Manage() {
 
       <ToastContainer />
 
-      {status && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className={`mb-8 p-4 rounded-xl ${
-            status.type === "success"
-              ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
-              : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
-          }`}
-        >
-          {status.message}
-        </motion.div>
-      )}
+      <ManageTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <ImageFilters onFilterChange={handleFilterChange} />
-
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Spinner className="h-12 w-12 text-indigo-500" />
-        </div>
-      ) : (
+      {activeTab === 'images' ? (
         <>
-          {images.length > 0 ? (
+          {status && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={`mb-8 p-4 rounded-xl ${
+                status.type === "success"
+                  ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+              }`}
+            >
+              {status.message}
+            </motion.div>
+          )}
+
+          <ImageFilters onFilterChange={handleFilterChange} />
+
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Spinner className="h-12 w-12 text-indigo-500" />
+            </div>
+          ) : (
             <>
-              <div className="space-y-8">
-                <div
-                  className={
-                    filters.orientation === "all"
-                      ? ""
-                      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                  }
-                >
-                  {filters.orientation === "all" ? (
-                    <Masonry
-                      breakpointCols={{
-                        default: 4,
-                        1280: 4,
-                        1024: 3,
-                        768: 2,
-                        640: 1,
-                      }}
-                      className="my-masonry-grid"
-                      columnClassName="my-masonry-grid_column"
+              {images.length > 0 ? (
+                <>
+                  <div className="space-y-8">
+                    <div
+                      className={
+                        filters.orientation === "all"
+                          ? ""
+                          : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                      }
                     >
-                      {images.map((image, index) => (
-                        <motion.div
-                          key={image.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{
-                            duration: 0.3,
-                            delay: (index % 24) * 0.05,
+                      {filters.orientation === "all" ? (
+                        <Masonry
+                          breakpointCols={{
+                            default: 4,
+                            1280: 4,
+                            1024: 3,
+                            768: 2,
+                            640: 1,
                           }}
-                          ref={index === images.length - 5 ? lastImageElementRef : null}
+                          className="my-masonry-grid"
+                          columnClassName="my-masonry-grid_column"
                         >
-                          <ImageCard
-                            image={image}
-                            onClick={() => {
-                              setSelectedImage(image);
-                              setIsModalOpen(true);
-                            }}
-                            onDelete={handleDelete}
-                          />
-                        </motion.div>
-                      ))}
-                    </Masonry>
-                  ) : (
-                    images.map((image, index) => (
-                      <motion.div
-                        key={image.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3, delay: (index % 24) * 0.05 }}
-                        ref={index === images.length - 5 ? lastImageElementRef : null}
-                      >
-                        <ImageCard
-                          image={image}
-                          onClick={() => {
-                            setSelectedImage(image);
-                            setIsModalOpen(true);
-                          }}
-                          onDelete={handleDelete}
-                        />
-                      </motion.div>
-                    ))
+                          {images.map((image, index) => (
+                            <motion.div
+                              key={image.id}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: (index % 24) * 0.05,
+                              }}
+                              ref={index === images.length - 5 ? lastImageElementRef : null}
+                            >
+                              <ImageCard
+                                image={image}
+                                onClick={() => {
+                                  setSelectedImage(image);
+                                  setIsModalOpen(true);
+                                }}
+                                onDelete={handleDelete}
+                              />
+                            </motion.div>
+                          ))}
+                        </Masonry>
+                      ) : (
+                        images.map((image, index) => (
+                          <motion.div
+                            key={image.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3, delay: (index % 24) * 0.05 }}
+                            ref={index === images.length - 5 ? lastImageElementRef : null}
+                          >
+                            <ImageCard
+                              image={image}
+                              onClick={() => {
+                                setSelectedImage(image);
+                                setIsModalOpen(true);
+                              }}
+                              onDelete={handleDelete}
+                            />
+                          </motion.div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                  {isFetchingMore && (
+                    <div className="flex justify-center items-center py-8">
+                      <Spinner className="h-8 w-8 text-indigo-500" />
+                      <span className="ml-2 text-indigo-500">加载更多图片...</span>
+                    </div>
                   )}
-                </div>
-              </div>
-              {isFetchingMore && (
-                <div className="flex justify-center items-center py-8">
-                  <Spinner className="h-8 w-8 text-indigo-500" />
-                  <span className="ml-2 text-indigo-500">加载更多图片...</span>
-                </div>
-              )}
-              {!isLoading && !isFetchingMore && images.length > 0 && !hasMore && (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  已加载全部图片 ({totalImages}张)
+                  {!isLoading && !isFetchingMore && images.length > 0 && !hasMore && (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      已加载全部图片 ({totalImages}张)
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
+                  <ImageIcon className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600" />
+                  <p className="text-lg font-medium">暂无图片</p>
+                  <p className="mt-2 text-sm">请上传图片或调整筛选条件</p>
                 </div>
               )}
             </>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
-              <ImageIcon className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600" />
-              <p className="text-lg font-medium">暂无图片</p>
-              <p className="mt-2 text-sm">请上传图片或调整筛选条件</p>
-            </div>
           )}
-        </>
-      )}
 
-      <ImageModal
-        image={selectedImage}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setSelectedImage(null);
-          setIsModalOpen(false);
-        }}
-        onDelete={handleDelete}
-      />
+          <ImageModal
+            image={selectedImage}
+            isOpen={isModalOpen}
+            onClose={() => {
+              setSelectedImage(null);
+              setIsModalOpen(false);
+            }}
+            onDelete={handleDelete}
+          />
+        </>
+      ) : (
+        <TagManagement />
+      )}
 
       <ApiKeyModal
         isOpen={showApiKeyModal}
