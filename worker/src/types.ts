@@ -79,6 +79,7 @@ export interface UploadResult {
     avif: number;
   };
   expiryTime?: string;
+  format?: string;
   error?: string;
 }
 

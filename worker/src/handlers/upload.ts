@@ -124,7 +124,8 @@ export async function uploadHandler(c: Context<{ Bindings: Env }>): Promise<Resp
           orientation: imageInfo.orientation,
           tags,
           sizes: imageMetadata.sizes,
-          expiryTime
+          expiryTime,
+          format: imageInfo.format
         });
 
       } catch (err) {

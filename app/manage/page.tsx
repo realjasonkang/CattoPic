@@ -27,6 +27,7 @@ export default function Manage() {
   useTheme();
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'images' | 'tags'>('images');
+  const prevTabRef = useRef<'images' | 'tags'>('images');
   const [images, setImages] = useState<ImageFile[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -190,6 +191,15 @@ export default function Manage() {
     fetchImages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
+
+  // 当从标签管理切换回图片管理时，刷新图片列表（因为可能删除了标签和关联图片）
+  useEffect(() => {
+    if (prevTabRef.current === 'tags' && activeTab === 'images' && isKeyVerified) {
+      fetchImages();
+    }
+    prevTabRef.current = activeTab;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   const handleFilterChange = (
     format: string,
